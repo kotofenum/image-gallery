@@ -7,13 +7,16 @@
 //
 
 import UIKit
+import Alamofire
 
 class ImageViewController: UIViewController {
     
-    @IBOutlet weak var label: UILabel!
     @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var thumbDateLabel: UILabel!
+    @IBOutlet weak var largeDateLabel: UILabel!
     
-    var url: URL?
+    
+    var photo: Photo?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +25,8 @@ class ImageViewController: UIViewController {
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
 
-        label.text = url?.absoluteString
-        self.downloadImage(from: url!)
+        self.thumbDateLabel.text = "Thumbnail cached at: \(photo!.getCacheDateAsString())"
+        self.setImage(photo: photo!)
     }
     
     @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
@@ -32,17 +35,18 @@ class ImageViewController: UIViewController {
         }
     }
     
-    func downloadImage(from url: URL) {
-        getData(from: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            
-            DispatchQueue.main.async() {
-                self.image.image = UIImage(data: data)
+    func setImage(photo: Photo) {
+        ImageManager.shared.loadImage(forPhoto: photo, size: "c", { result in
+
+            switch result {
+            case .error(let error):
+                print("Error loading image: \(error)")
+            case .results(let image):
+                if (image.cachedAt != nil) {
+                    self.largeDateLabel.text = "Original cached at: \(image.getCacheDateAsString())"
+                }
+                self.image.image = image.thumbnail
             }
-        }
-    }
-    
-    func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
-        URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
+        })
     }
 }

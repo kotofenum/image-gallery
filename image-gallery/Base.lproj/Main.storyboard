@@ -31,7 +31,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="W7V-O0-3Hf">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="W7V-O0-3Hf">
                                             <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                         </imageView>
                                     </subviews>
@@ -48,7 +48,7 @@
                                 </connections>
                             </collectionViewCell>
                         </cells>
-                        <collectionReusableView key="sectionHeaderView" hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="GalleryCollectionReusableView" id="HCZ-fE-O5Y" customClass="GalleryCollectionReusableView" customModule="image_gallery" customModuleProvider="target">
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="GalleryCollectionReusableView" id="HCZ-fE-O5Y" customClass="GalleryCollectionReusableView" customModule="image_gallery" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
@@ -102,28 +102,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g2o-EJ-min">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g2o-EJ-min">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vfp-Yw-cEh">
-                                <rect key="frame" x="16" y="40" width="343" height="101"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1YP-qg-BJd">
+                                <rect key="frame" x="16" y="626" width="343" height="20.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
+                                <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vfp-Yw-cEh">
+                                <rect key="frame" x="16" y="597" width="343" height="20.5"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="UwS-x0-fKG" firstAttribute="trailing" secondItem="g2o-EJ-min" secondAttribute="trailing" id="Ceg-2c-eVm"/>
                             <constraint firstItem="g2o-EJ-min" firstAttribute="centerY" secondItem="6FT-CA-thL" secondAttribute="centerY" id="T1a-Ra-wRa"/>
                             <constraint firstItem="g2o-EJ-min" firstAttribute="centerX" secondItem="6FT-CA-thL" secondAttribute="centerX" id="ilJ-iZ-ivb"/>
+                            <constraint firstItem="g2o-EJ-min" firstAttribute="centerY" secondItem="6FT-CA-thL" secondAttribute="centerY" id="mCi-C7-ggQ"/>
+                            <constraint firstItem="UwS-x0-fKG" firstAttribute="bottom" secondItem="g2o-EJ-min" secondAttribute="bottom" id="mMj-bc-d0u"/>
+                            <constraint firstItem="g2o-EJ-min" firstAttribute="leading" secondItem="UwS-x0-fKG" secondAttribute="leading" id="nNS-9g-6yv"/>
+                            <constraint firstItem="g2o-EJ-min" firstAttribute="centerX" secondItem="6FT-CA-thL" secondAttribute="centerX" id="rJv-Go-sD8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="UwS-x0-fKG"/>
                     </view>
                     <connections>
-                        <outlet property="image" destination="g2o-EJ-min" id="5sN-YK-R2C"/>
-                        <outlet property="label" destination="Vfp-Yw-cEh" id="LTY-9I-A1u"/>
+                        <outlet property="image" destination="g2o-EJ-min" id="OyV-R1-CJp"/>
+                        <outlet property="largeDateLabel" destination="1YP-qg-BJd" id="tJo-Wm-PP3"/>
+                        <outlet property="thumbDateLabel" destination="Vfp-Yw-cEh" id="wz7-Bu-9iT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fxZ-p7-mPX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -149,4 +164,7 @@
             <point key="canvasLocation" x="164" y="-144"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="placeholder.png" width="300" height="300"/>
+    </resources>
 </document>

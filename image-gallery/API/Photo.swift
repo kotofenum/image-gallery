@@ -8,14 +8,49 @@
 
 import UIKit
 
-class Photo: Equatable {
+class Photo: NSObject, NSCoding {
+    func encode(with aCoder: NSCoder) {
+        
+        aCoder.encode(thumbnail, forKey: "thumbnail")
+        aCoder.encode(largeImage, forKey: "largeImage")
+        aCoder.encode(cachedAt, forKey: "cachedAt")
+        aCoder.encode(photoID, forKey: "photoID")
+        aCoder.encode(farm, forKey: "farm")
+        aCoder.encode(server, forKey: "server")
+        aCoder.encode(secret, forKey: "secret")
+        print("'encoding'")
+        print(aCoder)
+    }
+    
+    required convenience init?(coder aDecoder: NSCoder) {
+        guard
+            let thumbnail = aDecoder.decodeObject(forKey: "thumbnail") as? UIImage,
+            let largeImage = aDecoder.decodeObject(forKey: "largeImage") as? UIImage,
+            let cachedAt = aDecoder.decodeObject(forKey: "cachedAt") as? Date,
+            let photoID = aDecoder.decodeObject(forKey: "photoID") as? String,
+            let farm = aDecoder.decodeObject(forKey: "farm") as? Int,
+            let server = aDecoder.decodeObject(forKey: "server") as? String,
+            let secret = aDecoder.decodeObject(forKey: "secret") as? String
+            else {
+                return nil
+        }
+        self.init(thumbnail: thumbnail,
+                  largeImage: largeImage,
+                  cachedAt: cachedAt,
+                  photoID: photoID,
+                  farm: farm,
+                  server: server,
+                  secret: secret
+                  )
+    }
+    
     var thumbnail: UIImage?
     var largeImage: UIImage?
+    var cachedAt: Date?
     let photoID: String
     let farm: Int
     let server: String
     let secret: String
-    let imageCache = NSCache<NSString, UIImage>()
     
     init (photoID: String, farm: Int, server: String, secret: String) {
         self.photoID = photoID
@@ -24,60 +59,33 @@ class Photo: Equatable {
         self.secret = secret
     }
     
-    func getImageURL(_ size: String = "m") -> URL? {
+    init (thumbnail: UIImage?, largeImage: UIImage?, cachedAt: Date?, photoID: String, farm: Int, server: String, secret: String) {
+        self.thumbnail = thumbnail
+        self.largeImage = largeImage
+        self.cachedAt = cachedAt
+        self.photoID = photoID
+        self.farm = farm
+        self.server = server
+        self.secret = secret
+    }
+    
+    public func getImageURL(_ size: String = "m") -> URL? {
         if let url =  URL(string: "https://farm\(farm).staticflickr.com/\(server)/\(photoID)_\(secret)_\(size).jpg") {
             return url
         }
         return nil
     }
     
-    func loadImage(_ completion: @escaping (Result<Photo>) -> Void) {
-        let loadURL = getImageURL()
+    public func getCacheDateAsString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        if let cachedImage = imageCache.object(forKey: loadURL!.absoluteString as NSString) {
-            self.largeImage = cachedImage
-            print("restore from cache")
-            completion(Result.results(self))
+        if (cachedAt != nil) {
+            let dateString = formatter.string(from: cachedAt!)
+            return dateString
         } else {
-            print("load from internet")
-            let loadRequest = URLRequest(url: loadURL!)
-            
-            URLSession.shared.dataTask(with: loadRequest) { (data, response, error) in
-                
-                guard let data = data else {
-                    DispatchQueue.main.async {
-                        completion(Result.error(error!))
-                    }
-                    return
-                }
-                
-                let returnedImage = UIImage(data: data)
-                self.largeImage = returnedImage
-                DispatchQueue.main.async {
-                    completion(Result.results(self))
-                }
-            }.resume()
+            return "Not cached yet."
         }
-    }
-    
-    func sizeToFillWidth(of size: CGSize) -> CGSize {
-        guard let thumbnail = thumbnail else {
-            return size
-        }
-        
-        let imageSize = thumbnail.size
-        var returnSize = size
-        
-        let aspectRatio = imageSize.width / imageSize.height
-        
-        returnSize.height = returnSize.width / aspectRatio
-        
-        if returnSize.height > size.height {
-            returnSize.height = size.height
-            returnSize.width = size.height * aspectRatio
-        }
-        
-        return returnSize
     }
     
     static func == (lhs: Photo, rhs: Photo) -> Bool {

@@ -11,5 +11,4 @@ import UIKit
 class GalleryCollectionReusableView: UICollectionReusableView {
         
     @IBOutlet weak var label: UILabel!
-    
 }

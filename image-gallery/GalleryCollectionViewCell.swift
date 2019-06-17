@@ -11,4 +11,10 @@ import UIKit
 class GalleryCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
+    
+    override var isSelected: Bool {
+        didSet {
+            // TODO: Выделять объект по тапу
+        }
+    }
 }
