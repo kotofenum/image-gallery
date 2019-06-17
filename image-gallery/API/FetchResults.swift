@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+struct FetchResults {
+    let searchTerm : String
+    let searchResults : [Photo]
+}
