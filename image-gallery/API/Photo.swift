@@ -70,10 +70,15 @@ class Photo: NSObject, NSCoding {
     }
     
     public func getImageURL(_ size: String = "m") -> URL? {
-        if let url =  URL(string: "https://farm\(farm).staticflickr.com/\(server)/\(photoID)_\(secret)_\(size).jpg") {
+        if let url = URL(string: "https://farm\(farm).staticflickr.com/\(server)/\(photoID)_\(secret)_\(size).jpg") {
             return url
         }
         return nil
+    }
+    
+    public func getImageName(_ size: String = "m") -> String {
+        let filename = "\(photoID)_\(secret)_\(size).jpg"
+        return filename
     }
     
     public func getCacheDateAsString() -> String {
