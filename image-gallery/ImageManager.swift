@@ -8,24 +8,66 @@
 
 import UIKit
 import Alamofire
+import CoreData
 
-class ImageManager: NSObject {
+class ImageManager {
     static let shared = ImageManager()
 
     private let imageCache = NSCache<NSString, NSString>()
     
-    override private init() {
+    private init() {}
+    
+    func saveImageMeta(url: String, filename: String, cachedAt: Date) {
+        
+        let managedContext = CoreDataManager.shared.persistentContainer.viewContext
+        managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        let entity =
+            NSEntityDescription.entity(forEntityName: "PhotoEntity",
+                                       in: managedContext)!
+        
+        let photo = NSManagedObject(entity: entity,
+                                     insertInto: managedContext)
+        
+        photo.setValue(url, forKey: "image_web_url")
+        photo.setValue(filename, forKey: "image_local_name")
+        photo.setValue(cachedAt, forKey: "cached_at")
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func fetchImageMeta(url: String) -> NSManagedObject? {
+        let managedContext = CoreDataManager.shared.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "PhotoEntity")
+        fetchRequest.predicate = NSPredicate(format: "image_web_url == %@", url)
+        
+        guard
+            let imageMeta = try? managedContext.fetch(fetchRequest).first
+            else {
+                print("Could not fetch")
+                return nil
+        }
+        
+        return imageMeta
     }
     
     func loadImage(forPhoto photo: Photo, size: String = "m", _ completion: @escaping (Result<Photo>) -> Void) {
         let url = photo.getImageURL(size)
         
-        if let cachedImageName = self.imageCache.object(forKey: url!.absoluteString as NSString) {
+        if let savedImageMeta = self.fetchImageMeta(url: url!.absoluteString) {
             print("Restore from cache")
+            let cacheDate = savedImageMeta.value(forKey: "cached_at") as! Date
+            let imageFileName = savedImageMeta.value(forKey: "image_local_name") as! String
             
-            let savedImage = self.getImageFromDocsDir(filename: cachedImageName as String)
+            let savedImage = self.getImageFromDocsDir(filename: imageFileName)
             
             photo.thumbnail = savedImage
+            photo.cachedAt = cacheDate
             completion(Result.results(photo))
         } else {
             print("Load from internet")
@@ -56,8 +98,9 @@ class ImageManager: NSObject {
                 self.saveImageInDocsDir(image: returnedImage, filename: imageName)
                 self.imageCache.setObject(imageName as NSString, forKey: url!.absoluteString as NSString)
                 
+                self.saveImageMeta(url: url!.absoluteString, filename: imageName, cachedAt: cacheDate)
+                
                 let savedImage = self.getImageFromDocsDir(filename: imageName)
-                print(savedImage)
                 
                 photo.thumbnail = savedImage
                 DispatchQueue.main.async {
@@ -68,27 +111,22 @@ class ImageManager: NSObject {
     }
     
     func saveImageInDocsDir(image: UIImage, filename: String) {
-        // get the documents directory url
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0] // Get documents folder
-        let dataPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("saved_images").path //Set folder name
-        //Check is folder available or not, if not create
+        let documentsDirectory = paths[0]
+        let dataPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("saved_images").path
+        
         if !FileManager.default.fileExists(atPath: dataPath) {
             do {
-                try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: true, attributes: nil) //Create folder if not
+                try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: true, attributes: nil)
             } catch let error {
                 print(error)
             }
         }
         
+        let fileURL = URL(fileURLWithPath:dataPath).appendingPathComponent(filename)
         
-        // create the destination file url to save your image
-        let fileURL = URL(fileURLWithPath:dataPath).appendingPathComponent(filename)//Your image name
-        print(fileURL)
-        // get your UIImage jpeg data representation
         let data = image.jpegData(compressionQuality: 1.0)
         do {
-            // writes the image data to disk
             try data?.write(to: fileURL, options: .atomic)
         } catch {
             print("error:", error)
@@ -96,21 +134,17 @@ class ImageManager: NSObject {
     }
 
     func getImageFromDocsDir(filename: String) -> UIImage? {
-        // get the documents directory url
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0] // Get documents folder
-        let dataPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("saved_images").path //Set folder name
-        print(dataPath)
-        //Check is folder available or not, if not create
+        let dataPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("saved_images").path
+        
         guard FileManager.default.fileExists(atPath: dataPath)
             else {
             return nil
         }
+
+        let fileURL = URL(fileURLWithPath:dataPath).appendingPathComponent(filename)
         
-        // create the destination file url to save your image
-        let fileURL = URL(fileURLWithPath:dataPath).appendingPathComponent(filename)//Your image name
-        print(fileURL)
-        // get your UIImage jpeg data representation
         let image = UIImage(contentsOfFile: fileURL.path)
         return image
     }

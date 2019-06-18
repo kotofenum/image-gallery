@@ -39,26 +39,40 @@ extension PhotoGalleryCollectionViewController: UITextFieldDelegate {
         activityIndicator.frame = textField.bounds
         activityIndicator.startAnimating()
         
-        fetchAndPopulateImages(text: textField.text!, completion: {
+        let trimmedText = textField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        fetchAndPopulateImages(text: trimmedText, completion: {
             activityIndicator.removeFromSuperview()
         })
-        
 
         textField.text = nil
         textField.resignFirstResponder()
         return true
     }
+
+    public func toast(msg: String) {
+        let alertDisapperTimeInSeconds = 2.0
+        let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
+        self.present(alert, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + alertDisapperTimeInSeconds) {
+        alert.dismiss(animated: true)
+        }
+    }
     
     func fetchAndPopulateImages(text: String, completion: @escaping () -> Void) {
-        client.fetchImages(for: text) { searchResults in
+        client.getImages(for: text) { searchResults in
             completion();
             
             switch searchResults {
             case .error(let error):
                 print("Error Searching: \(error)")
+                self.toast(msg: error.localizedDescription)
             case .results(let results):
                 print("Found \(results.searchResults.count) matching \(results.searchTerm)")
-                self.searches.insert(results, at: 0)
+                if (results.cached) {
+                    self.toast(msg: "Bad connection. Showing cached results.")
+                }
+                self.searches = [results]
                 self.collectionView?.reloadData()
             }
         }

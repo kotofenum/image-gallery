@@ -8,42 +8,7 @@
 
 import UIKit
 
-class Photo: NSObject, NSCoding {
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(thumbnail, forKey: "thumbnail")
-        aCoder.encode(largeImage, forKey: "largeImage")
-        aCoder.encode(cachedAt, forKey: "cachedAt")
-        aCoder.encode(photoID, forKey: "photoID")
-        aCoder.encode(farm, forKey: "farm")
-        aCoder.encode(server, forKey: "server")
-        aCoder.encode(secret, forKey: "secret")
-        print("'encoding'")
-        print(aCoder)
-    }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        guard
-            let thumbnail = aDecoder.decodeObject(forKey: "thumbnail") as? UIImage,
-            let largeImage = aDecoder.decodeObject(forKey: "largeImage") as? UIImage,
-            let cachedAt = aDecoder.decodeObject(forKey: "cachedAt") as? Date,
-            let photoID = aDecoder.decodeObject(forKey: "photoID") as? String,
-            let farm = aDecoder.decodeObject(forKey: "farm") as? Int,
-            let server = aDecoder.decodeObject(forKey: "server") as? String,
-            let secret = aDecoder.decodeObject(forKey: "secret") as? String
-            else {
-                return nil
-        }
-        self.init(thumbnail: thumbnail,
-                  largeImage: largeImage,
-                  cachedAt: cachedAt,
-                  photoID: photoID,
-                  farm: farm,
-                  server: server,
-                  secret: secret
-                  )
-    }
-    
+class Photo {
     var thumbnail: UIImage?
     var largeImage: UIImage?
     var cachedAt: Date?
@@ -91,9 +56,5 @@ class Photo: NSObject, NSCoding {
         } else {
             return "Not cached yet."
         }
-    }
-    
-    static func == (lhs: Photo, rhs: Photo) -> Bool {
-        return lhs.photoID == rhs.photoID
     }
 }

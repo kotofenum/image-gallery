@@ -35,16 +35,24 @@ class ImageViewController: UIViewController {
         }
     }
     
+    public func toast(msg: String) {
+        let alertDisapperTimeInSeconds = 2.0
+        let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
+        self.present(alert, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + alertDisapperTimeInSeconds) {
+            alert.dismiss(animated: true)
+        }
+    }
+    
     func setImage(photo: Photo) {
         ImageManager.shared.loadImage(forPhoto: photo, size: "c", { result in
 
             switch result {
             case .error(let error):
                 print("Error loading image: \(error)")
+                self.toast(msg: error.localizedDescription)
             case .results(let image):
-                if (image.cachedAt != nil) {
-                    self.largeDateLabel.text = "Original cached at: \(image.getCacheDateAsString())"
-                }
+                self.largeDateLabel.text = "Original cached at: \(image.getCacheDateAsString())"
                 self.image.image = image.thumbnail
             }
         })
