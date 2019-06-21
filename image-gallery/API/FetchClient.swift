@@ -12,6 +12,7 @@ import CoreData;
 
 class FetchClient {
     let apiKey = "a2f7a2f240bcaa98182b4ce467dbeb9e"
+    let perPage = 30
     
     enum Error: Swift.Error {
         case unknownAPIResponse
@@ -34,7 +35,7 @@ class FetchClient {
             photoObj.setValue(photo.server, forKey: "server")
             photoObj.setValue(photo.secret, forKey: "secret")
             photoObj.setValue(photo.photoID, forKey: "photo_id")
-            photoObj.setValue(photo.photoID, forKey: "photo_id")
+            photoObj.setValue(photo.title, forKey: "title")
             photoObj.setValue(searchTerm, forKey: "search_term")
             photoObj.setValue(offset, forKey: "offset")
         })
@@ -67,13 +68,14 @@ class FetchClient {
                 let photoID = photoObject.value(forKey: "photo_id") as? String,
                 let farm = photoObject.value(forKey: "farm") as? Int,
                 let server = photoObject.value(forKey: "server") as? String,
-                let secret = photoObject.value(forKey: "secret") as? String
+                let secret = photoObject.value(forKey: "secret") as? String,
+                let title = photoObject.value(forKey: "title") as? String
                 else {
                     return nil
             }
             
             
-            let photo = Photo(photoID: photoID, farm: farm, server: server, secret: secret)
+            let photo = Photo(photoID: photoID, farm: farm, server: server, secret: secret, title: title)
             
             return photo
         }
@@ -95,8 +97,8 @@ class FetchClient {
         }
     }
     
-    public func getImages(for searchTerm: String, completion: @escaping (Result<FetchResults>) -> Void) {
-        self.fetchImages(for: searchTerm, completion: { fetchResults in
+    public func getImages(for searchTerm: String, page: Int, completion: @escaping (Result<FetchResults>) -> Void) {
+        self.fetchImages(for: searchTerm, page: page, completion: { fetchResults in
             switch fetchResults {
             case .error(let error):
                 
@@ -118,8 +120,8 @@ class FetchClient {
         
     }
     
-    public func fetchImages(for searchTerm: String, completion: @escaping (Result<FetchResults>) -> Void) {
-        Alamofire.request("https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&text=\(searchTerm)&format=json&nojsoncallback=1").responseJSON { response in
+    public func fetchImages(for searchTerm: String, page: Int, completion: @escaping (Result<FetchResults>) -> Void) {
+        Alamofire.request("https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(apiKey)&text=\(searchTerm)&per_page=\(perPage)&page=\(page)&format=json&nojsoncallback=1").responseJSON { response in
             
             if response.result.isSuccess {
                 guard let data = response.data else { return }
@@ -165,13 +167,14 @@ class FetchClient {
                             let photoID = photoObject["id"] as? String,
                             let farm = photoObject["farm"] as? Int,
                             let server = photoObject["server"] as? String,
-                            let secret = photoObject["secret"] as? String
+                            let secret = photoObject["secret"] as? String,
+                            let title = photoObject["title"] as? String
                             else {
                                 return nil
                         }
                         
                         
-                        let photo = Photo(photoID: photoID, farm: farm, server: server, secret: secret)
+                        let photo = Photo(photoID: photoID, farm: farm, server: server, secret: secret, title: title)
 
                         return photo
                     }

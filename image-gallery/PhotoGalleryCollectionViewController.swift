@@ -19,8 +19,18 @@ class PhotoGalleryCollectionViewController: UICollectionViewController {
     private let client = FetchClient()
     private let itemsPerRow: CGFloat = 3
     
+    private var page: Int = 1
+
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout! {
+        didSet {
+            flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        collectionView.prefetchDataSource = self
         
         fetchAndPopulateImages(text: "cats", completion: {})
     }
@@ -29,6 +39,13 @@ class PhotoGalleryCollectionViewController: UICollectionViewController {
 private extension PhotoGalleryCollectionViewController {
     func photo(for indexPath: IndexPath) -> Photo {
         return searches[indexPath.section].searchResults[indexPath.row]
+    }
+}
+
+extension PhotoGalleryCollectionViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        page += 1
+        fetchAndPopulateImages(text: "cats") {}
     }
 }
 
@@ -60,7 +77,7 @@ extension PhotoGalleryCollectionViewController: UITextFieldDelegate {
     }
     
     func fetchAndPopulateImages(text: String, completion: @escaping () -> Void) {
-        client.getImages(for: text) { searchResults in
+        client.getImages(for: text, page: page) { searchResults in
             completion();
             
             switch searchResults {
@@ -93,8 +110,7 @@ extension PhotoGalleryCollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! GalleryCollectionViewCell
         let image = photo(for: indexPath)
         
-        cell.backgroundColor = .gray
-        
+        cell.title.text = image.title
         cell.imageView.image = #imageLiteral(resourceName: "placeholder.png")
         
         guard
@@ -114,6 +130,8 @@ extension PhotoGalleryCollectionViewController {
         }
         
         cell.imageView.image = image.thumbnail
+        cell.sizes.text = "W: \(cell.bounds.width), H: \(cell.bounds.height)"
+        
         return cell
     }
     
@@ -134,14 +152,6 @@ extension PhotoGalleryCollectionViewController {
 }
 
 extension PhotoGalleryCollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-        let availableWidth = view.frame.width - paddingSpace
-        let widthPerItem = availableWidth / itemsPerRow
-        
-        return CGSize(width: widthPerItem, height: widthPerItem)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return sectionInsets
     }

@@ -90,6 +90,8 @@ class ImageManager {
                         return
                 }
                 
+                print("Image width: \(returnedImage.size.width), height: \(returnedImage.size.height)")
+                
                 let cacheDate = Date()
                 photo.cachedAt = cacheDate
                 

@@ -2,4 +2,69 @@
 <Bucket
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "image-gallery/PhotoGalleryCollectionViewController.swift"
+            timestampString = "582804396.769365"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
+            landmarkName = "PhotoGalleryCollectionViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "image_gallery.PhotoGalleryCollectionViewController.init(collectionViewLayout: __C.UICollectionViewLayout) -&gt; image_gallery.PhotoGalleryCollectionViewController"
+                  moduleName = "image-gallery"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khristo/Desktop/image-gallery/image-gallery/PhotoGalleryCollectionViewController.swift"
+                  timestampString = "582802505.402294"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "376">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "image_gallery.PhotoGalleryCollectionViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; image_gallery.PhotoGalleryCollectionViewController"
+                  moduleName = "image-gallery"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khristo/Desktop/image-gallery/image-gallery/PhotoGalleryCollectionViewController.swift"
+                  timestampString = "582802505.406574"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "400">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "image_gallery.PhotoGalleryCollectionViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;image_gallery.PhotoGalleryCollectionViewController&gt;"
+                  moduleName = "image-gallery"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khristo/Desktop/image-gallery/image-gallery/PhotoGalleryCollectionViewController.swift"
+                  timestampString = "582802505.40909"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "376">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
