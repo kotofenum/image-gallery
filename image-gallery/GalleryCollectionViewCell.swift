@@ -20,6 +20,13 @@ class GalleryCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    override func prepareForReuse() {
+        
+        imageView.image = #imageLiteral(resourceName: "placeholder.png")
+        
+        super.prepareForReuse()
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

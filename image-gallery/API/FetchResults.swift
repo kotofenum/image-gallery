@@ -10,6 +10,6 @@ import Foundation
 
 struct FetchResults {
     let searchTerm : String
-    let searchResults : [Photo]
+    var searchResults : [Photo]
     let cached : Bool
 }
