@@ -95,6 +95,7 @@ class GalleryDataSource: NSObject, UICollectionViewDataSource, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        print("prefetch called for \(indexPaths)")
         if indexPaths.contains(where: isFetchingNeeded) {
             page += 1
             fetchAndPopulateImages(completion: { results in
@@ -118,7 +119,7 @@ class GalleryDataSource: NSObject, UICollectionViewDataSource, UICollectionViewD
                         case .error(let error):
                             print("Error loading image: \(error)")
                         case .results(let image):
-                            print(image.thumbnail)
+                            print("Successfully prefetched \(image)")
                         }
                     })
                 return

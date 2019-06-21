@@ -20,6 +20,7 @@ class PhotoGalleryCollectionViewController: UICollectionViewController {
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout! {
         didSet {
 //            flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//            Если включить авторастягивание, перестает вызываться prefetchItemsAt
         }
     }
     
@@ -29,8 +30,6 @@ class PhotoGalleryCollectionViewController: UICollectionViewController {
         collectionView.dataSource = dataSource
         collectionView.prefetchDataSource = dataSource
         
-        
-        collectionView.reloadData()
         dataSource.searchPhotos(text: "cats", completion: { results in
             switch results {
             case .error(let error):

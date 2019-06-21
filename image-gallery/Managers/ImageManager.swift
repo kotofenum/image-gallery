@@ -15,6 +15,8 @@ class ImageManager {
 
     private let imageCache = NSCache<NSString, NSString>()
     
+    private let backgroundQueue = DispatchQueue(label: "QueueIdentification", qos: .background)
+    
     private init() {}
     
     func saveImageMeta(url: String, filename: String, cachedAt: Date) {
@@ -97,14 +99,15 @@ class ImageManager {
                 
                 let imageName = photo.getImageName()
                 
-                self.saveImageInDocsDir(image: returnedImage, filename: imageName)
+                DispatchQueue.global(qos: .background).async {
+                    self.saveImageInDocsDir(image: returnedImage, filename: imageName)
+                }
+                
                 self.imageCache.setObject(imageName as NSString, forKey: url!.absoluteString as NSString)
                 
                 self.saveImageMeta(url: url!.absoluteString, filename: imageName, cachedAt: cacheDate)
                 
-                let savedImage = self.getImageFromDocsDir(filename: imageName)
-                
-                photo.thumbnail = savedImage
+                photo.thumbnail = returnedImage
                 DispatchQueue.main.async {
                     completion(Result.results(photo))
                 }
